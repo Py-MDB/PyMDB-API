@@ -12,6 +12,7 @@ setup(
         "pymongo",
         "flask-cors",
         "cerberus",
+        "requests",
     ],
     include_package_data=True,
     python_requires=">=3.6",

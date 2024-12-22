@@ -1,1 +1,4 @@
 test.py
+build/
+*__pycache__/
+*.egg-info/
