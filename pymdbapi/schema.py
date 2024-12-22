@@ -6,6 +6,16 @@ class DatabaseSchema:
             'id': {'type': 'string', 'required': True},
             'name': {'type': 'string', 'required': True},
             'type': {'type': 'string', 'required': True},
+            'state': {'type': 'string', 'required': True},
+            'operating_system': {'type': 'string', 'required': False},
+            'management': {
+                'type': 'dict',
+                'schema': {
+                    'ip': {'type': 'string', 'required': False},
+                    'username': {'type': 'string', 'required': False},
+                    'password': {'type': 'string', 'required': False}
+                }
+            },
             'specs': {
                 'type': 'dict',
                 'schema': {
