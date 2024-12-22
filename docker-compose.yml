@@ -1,0 +1,40 @@
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: pymdbapi-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    command: ["mongod", "--bind_ip", "0.0.0.0"]
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      pymdb_network:
+        ipv4_address: 172.20.0.2
+
+  pymdbapi:
+    build:
+      context: ../PyMDB-API
+      dockerfile: Dockerfile
+    container_name: pymdbapi
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    restart: always
+    networks:
+      pymdb_network:
+        ipv4_address: 172.20.0.3
+
+volumes:
+  mongodb-data:
+
+networks:
+  pymdb_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
