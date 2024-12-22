@@ -29,7 +29,7 @@ API Piece for PyMDB
 
     ```sh
     cd PyMDB-DB
-    docker-compose up --build
+    docker-compose up --build -d
     ```
 
 4. The API should now be accessible at `http://localhost:5000`.
