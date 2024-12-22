@@ -25,10 +25,10 @@ API Piece for PyMDB
     export MONGO_PORT=27017
     ```
 
-3. Navigate to the `PyMDB-DB` directory and start the services using Docker Compose:
+3. Navigate to the `PyMDB-API` directory and start the services using Docker Compose:
 
     ```sh
-    cd PyMDB-DB
+    cd PyMDB-API
     docker-compose up --build -d
     ```
 
