@@ -1,37 +1,36 @@
 import os
 from flask import Blueprint, jsonify, request
-from pymongo import MongoClient
 from cerberus import Validator
-from bson import ObjectId
 from pymdbapi.schema import DatabaseSchema
+from pymdbapi.mongodb import PyMongoDB
 
 schema = DatabaseSchema()
 routes = Blueprint('routes', __name__)
-
-# MongoDB configuration
-mongo_user = os.getenv("MONGO_INITDB_ROOT_USERNAME")
-mongo_password = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
-mongo_host = os.getenv("MONGO_HOST", "mongodb")
-mongo_port = os.getenv("MONGO_PORT", 27017)
-
-client = MongoClient(f"mongodb://{mongo_user}:{mongo_password}@{mongo_host}:{mongo_port}/")
-db = client["pyapi-db"]
+db = PyMongoDB()
 
 @routes.route('/')
 def home():
     return jsonify({"message": "Welcome to the PyMDB API!"})
 
-@routes.route('/hardware')
+@routes.route('/hardware', methods=['GET'])
 def get_data():
-    try:
-        data = list(db.hardware_data.find())
-        for item in data:
-            item.pop('_id', None)
-        if not data:
-            return jsonify([]), 200
-        return jsonify(data), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    filters = request.args.to_dict()
+    if filters:
+        try:
+            data = db.find_by_key_value('hardware_data', filters)
+            if not data:
+                return jsonify({"error": "No data found"}), 404
+            return jsonify(data), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    else:
+        try:
+            data = db.get_all('hardware_data')
+            if not data:
+                return jsonify([]), 200
+            return jsonify(data), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
 @routes.route('/hardware', methods=['POST'])
 def create_data():
@@ -39,6 +38,20 @@ def create_data():
     data = request.json
     if not validator.validate(data):
         return jsonify({"error": "Invalid data", "details": validator.errors}), 400
-    result = db.hardware_data.insert_one(data)
-    return jsonify({"inserted_id": str(result.inserted_id)}), 201
+    inserted_id = db.insert('hardware_data', data)
+    return jsonify({"inserted_id": inserted_id}), 201
+
+@routes.route('/hardware', methods=['DELETE'])
+def delete_data():
+    id = request.args.get('id')
+    if id:
+        try:
+            deleted_count = db.delete_by_id('hardware_data', id)
+            if deleted_count == 0:
+                return jsonify({"error": "No data found to delete"}), 404
+            return jsonify({"deleted_count": deleted_count}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({"error": "id parameter is required"}), 400
 
