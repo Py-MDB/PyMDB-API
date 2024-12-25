@@ -2,15 +2,15 @@
 
 class DatabaseSchema:
     def __init__(self):
-        self.hardware_schema = {
-            'id': {'type': 'string', 'required': True},
+        self.hardware_data_schema = {
+            'id': {'type': 'string', 'required': False},
             'name': {'type': 'string', 'required': True},
             'type': {'type': 'string', 'required': True},
             'state': {'type': 'string', 'required': True},
             'operating_system': {
                 'type': 'dict',
                 'schema': {
-                    'href': {'type': 'string', 'required': True},
+                    'href': {'type': 'string', 'required': False},
                     'id': {'type': 'string', 'required': False},
                     'name': {'type': 'string', 'required': False},
                     'slug': {'type': 'string', 'required': False},
@@ -20,7 +20,7 @@ class DatabaseSchema:
             'facility': {
                 'type': 'dict',
                 'schema': {
-                    'href': {'type': 'string', 'required': True},
+                    'href': {'type': 'string', 'required': False},
                     'id': {'type': 'string', 'required': False},
                     'name': {'type': 'string', 'required': False},
                     'slug': {'type': 'string', 'required': False},

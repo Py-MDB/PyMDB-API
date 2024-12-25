@@ -28,6 +28,8 @@ services:
     networks:
       pymdb_network:
         ipv4_address: 172.20.0.3
+    depends_on:
+      - mongodb
 
 volumes:
   mongodb-data:
