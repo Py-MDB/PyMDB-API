@@ -26,7 +26,16 @@ class RouteHelper:
     def __init__(self):
         pass
 
-    def get_data(self, collection_name):
+    def get_data(self, collection_name: str):
+        """
+        Retrieve data from a specified collection with optional filters and includes.
+
+        Args:
+            collection_name (str): The name of the collection to retrieve data from.
+
+        Returns:
+            Response: A Flask response object containing the retrieved data or an error message.
+        """
         filters = request.args.to_dict()
         includes = filters.pop('include', '').split(',')
         if filters:
@@ -46,7 +55,17 @@ class RouteHelper:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
         
-    def get_data_by_id(self, collection_name, id):
+    def get_data_by_id(self, collection_name: str, id: str):
+        """
+        Retrieve data from a specified collection by ID with optional includes.
+
+        Args:
+            collection_name (str): The name of the collection to retrieve data from.
+            id (str): The unique ID of the document to retrieve.
+
+        Returns:
+            Response: A Flask response object containing the retrieved data or an error message.
+        """
         filters = request.args.to_dict()
         includes = filters.pop('include', '').split(',')
         try:
@@ -57,7 +76,16 @@ class RouteHelper:
         except Exception as e:
             return jsonify({"error": str(e)}), 500
         
-    def add_data(self, collection_name):
+    def add_data(self, collection_name: str):
+        """
+        Add new data to a specified collection.
+
+        Args:
+            collection_name (str): The name of the collection to add data to.
+
+        Returns:
+            Response: A Flask response object containing the inserted ID or an error message.
+        """
         collection_schema = getattr(schema, f"{collection_name}_schema")
         validator = Validator(collection_schema)
         data = request.json
@@ -66,7 +94,17 @@ class RouteHelper:
         inserted_id = db.insert(collection_name, data)
         return jsonify({"inserted_id": inserted_id}), 201
     
-    def delete_data_by_id(self, collection_name, id):
+    def delete_data_by_id(self, collection_name: str, id: str):
+        """
+        Delete data from a specified collection by ID.
+
+        Args:
+            collection_name (str): The name of the collection to delete data from.
+            id (str): The unique ID of the document to delete.
+
+        Returns:
+            Response: A Flask response object containing the count of deleted documents or an error message.
+        """
         if id:
             try:
                 deleted_count = db.delete_by_id(collection_name, id)

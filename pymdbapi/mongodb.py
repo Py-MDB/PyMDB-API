@@ -19,6 +19,9 @@ import uuid
 
 class PyMongoDB:
     def __init__(self):
+        """
+        Initialize the MongoDB client and connect to the database.
+        """
         mongo_user = os.getenv("MONGO_INITDB_ROOT_USERNAME")
         mongo_password = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
         mongo_host = os.getenv("MONGO_HOST", "mongodb")
@@ -26,7 +29,17 @@ class PyMongoDB:
         self.client = MongoClient(f"mongodb://{mongo_user}:{mongo_password}@{mongo_host}:{mongo_port}/")
         self.db = self.client["pyapi-db"]
 
-    def get_all(self, collection_name, includes=[]):
+    def get_all(self, collection_name: str, includes: list=[]) -> dict:
+        """
+        Retrieve all documents from a specified collection with optional includes.
+
+        Args:
+            collection_name (str): The name of the collection to retrieve data from.
+            includes (list): A list of related documents to include in the response.
+
+        Returns:
+            dict: A list of documents from the collection.
+        """
         collection = self.db[collection_name]
         data = list(collection.find())
         for item in data:
@@ -35,7 +48,17 @@ class PyMongoDB:
             self._add_hrefs(item)
         return data
 
-    def insert(self, collection_name, data):
+    def insert(self, collection_name: str, data: dict) -> str:
+        """
+        Insert a new document into a specified collection and return the inserted ID.
+
+        Args:
+            collection_name (str): The name of the collection to insert data into.
+            data (dict): The data to insert into the collection.
+
+        Returns:
+            str: The ID of the inserted document.
+        """
         collection = self.db[collection_name]
         while True:
             new_uuid = str(uuid.uuid4())
@@ -45,21 +68,49 @@ class PyMongoDB:
         result = collection.insert_one(data)
         return data['id']
 
-    def find_by_key_value(self, collection_name, filters, includes=[]):
+    def find_by_key_value(self, collection_name: str, filters: dict, includes: list=[]) -> dict:
+        """
+        Find documents in a specified collection by key-value filters with optional includes.
+
+        Args:
+            collection_name (str): The name of the collection to retrieve data from.
+            filters (dict): The key-value filters to apply to the query.
+            includes (list): A list of related documents to include in the response.
+
+        Returns:
+            dict: A list of documents that match the filters.
+        """
         collection = self.db[collection_name]
         data = list(collection.find(filters))
         for item in data:
             item.pop('_id', None)
             self._add_includes(item, includes)
-            self._add_hrefs
+            self._add_hrefs(item)
         return data
 
-    def delete_by_id(self, collection_name, id):
+    def delete_by_id(self, collection_name: str, id: str) -> int:
+        """
+        Delete a document from a specified collection by ID and return the count of deleted documents.
+
+        Args:
+            collection_name (str): The name of the collection to delete data from.
+            id (str): The unique ID of the document to delete.
+
+        Returns:
+            int: The count of deleted documents.
+        """
         collection = self.db[collection_name]
         result = collection.delete_one({"id": id})
         return result.deleted_count
 
-    def _add_includes(self, item, includes):
+    def _add_includes(self, item: dict, includes: list) -> None:
+        """
+        Add included related documents to the item.
+
+        Args:
+            item (dict): The document to add includes to.
+            includes (list): A list of related documents to include in the item.
+        """
         include_transmute = {
             'facility': 'facilities'
         }
@@ -74,7 +125,13 @@ class PyMongoDB:
                     full_item.pop('_id', None)
                     item[include] = full_item
 
-    def _add_hrefs(self, item):
+    def _add_hrefs(self, item: dict) -> None:
+        """
+        Create href links from the uuids within linked documents.
+
+        Args:
+            item (dict): The document to add href links to.
+        """
         if 'facility' in item and 'id' in item['facility']:
             item['facility']['href'] = f"/facilities/{item['facility']['id']}"
         if 'operating_system' in item and 'id' in item['operating_system']:
