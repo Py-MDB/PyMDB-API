@@ -1,57 +1,59 @@
-import os
-from flask import Blueprint, jsonify, request
-from cerberus import Validator
-from pymdbapi.schema import DatabaseSchema
-from pymdbapi.mongodb import PyMongoDB
+from flask import Blueprint, jsonify
+from pymdbapi.route_helper import RouteHelper
 
-schema = DatabaseSchema()
+
+routehelper = RouteHelper()
 routes = Blueprint('routes', __name__)
-db = PyMongoDB()
+
 
 @routes.route('/')
 def home():
     return jsonify({"message": "Welcome to the PyMDB API!"})
 
 @routes.route('/hardware', methods=['GET'])
-def get_data():
-    filters = request.args.to_dict()
-    if filters:
-        try:
-            data = db.find_by_key_value('hardware_data', filters)
-            if not data:
-                return jsonify({"error": "No data found"}), 404
-            return jsonify(data), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-    else:
-        try:
-            data = db.get_all('hardware_data')
-            if not data:
-                return jsonify([]), 200
-            return jsonify(data), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+def get_hardware():
+    return routehelper.get_data('hardware_data')
+
+@routes.route('/hardware/<id>', methods=['GET'])
+def get_hardware_by_id(id):
+    return routehelper.get_data_by_id('hardware_data', id)
 
 @routes.route('/hardware', methods=['POST'])
-def create_data():
-    validator = Validator(schema.hardware_schema)
-    data = request.json
-    if not validator.validate(data):
-        return jsonify({"error": "Invalid data", "details": validator.errors}), 400
-    inserted_id = db.insert('hardware_data', data)
-    return jsonify({"inserted_id": inserted_id}), 201
+def create_hardware():
+    return routehelper.add_data('hardware_data')
 
-@routes.route('/hardware', methods=['DELETE'])
-def delete_data():
-    id = request.args.get('id')
-    if id:
-        try:
-            deleted_count = db.delete_by_id('hardware_data', id)
-            if deleted_count == 0:
-                return jsonify({"error": "No data found to delete"}), 404
-            return jsonify({"deleted_count": deleted_count}), 200
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
-    else:
-        return jsonify({"error": "id parameter is required"}), 400
+@routes.route('/hardware/<id>', methods=['DELETE'])
+def delete_hardware(id):
+    return routehelper.delete_data_by_id('hardware_data', id)
 
+@routes.route('/facilities', methods=['GET'])
+def get_facilities():
+    return routehelper.get_data('facilities')
+
+@routes.route('/facilities/<id>', methods=['GET'])
+def get_facility_by_id(id):
+    return routehelper.get_data_by_id('facilities', id)
+
+@routes.route('/facilities', methods=['POST'])
+def create_facility():
+    return routehelper.add_data('facilities')
+
+@routes.route('/facilities/<id>', methods=['DELETE'])
+def delete_facility(id):
+    return routehelper.delete_data_by_id('facilities', id)
+
+@routes.route('/operating_systems', methods=['GET'])
+def get_operating_systems():
+    return routehelper.get_data('operating_systems')
+
+@routes.route('/operating_systems/<id>', methods=['GET'])
+def get_operating_system_by_id(id):
+    return routehelper.get_data_by_id('operating_systems', id)
+
+@routes.route('/operating_systems', methods=['POST'])
+def create_operating_system():
+    return routehelper.add_data('operating_systems')
+
+@routes.route('/operating_systems/<id>', methods=['DELETE'])
+def delete_operating_system(id):
+    return routehelper.delete_data_by_id('operating_systems', id)
