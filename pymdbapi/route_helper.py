@@ -12,7 +12,7 @@ you make are also licensed under the MPL-2.0. For full terms and conditions, ref
 Author(s): Jesse Butryn (jesse@jesseb.org)
 """
 
-from flask import jsonify, request
+from flask import jsonify, request, url_for
 from pymdbapi.mongodb import PyMongoDB
 from pymdbapi.schema import DatabaseSchema
 from cerberus import Validator
@@ -38,22 +38,42 @@ class RouteHelper:
         """
         filters = request.args.to_dict()
         includes = filters.pop('include', '').split(',')
+        page = int(filters.pop('page', 1))
+        limit = int(filters.pop('limit', 10))
+        skip = (page - 1) * limit
+
         if filters:
             try:
                 data = db.find_by_key_value(collection_name, filters, includes)
-                if not data:
-                    return jsonify({"error": "No data found"}), 404
-                return jsonify(data), 200
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
         else:
             try:
                 data = db.get_all(collection_name, includes)
-                if not data:
-                    return jsonify([]), 200
-                return jsonify(data), 200
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
+
+        total_results = len(data)
+        total_pages = (total_results + limit - 1) // limit
+        paginated_data = data[skip:skip + limit]
+
+        if not paginated_data:
+            return jsonify({"error": "No data found"}), 404
+
+        next_page = page + 1 if page < total_pages else None
+        next_page_url = url_for(request.endpoint, page=next_page, limit=limit, _external=True) if next_page else None
+
+        response = {
+            collection_name: paginated_data,
+            "meta": {
+                "page": page,
+                "total_pages": total_pages,
+                "total_results": total_results,
+                "next_page_url": next_page_url,
+            },
+        }
+
+        return jsonify(response), 200
         
     def get_data_by_id(self, collection_name: str, id: str):
         """
