@@ -103,6 +103,17 @@ class PyMongoDB:
         result = collection.delete_one({"id": id})
         return result.deleted_count
 
+    def update_user_tokens(self, user_id: str, tokens: list) -> None:
+        """
+        Update the tokens for a given user.
+
+        Args:
+            user_id (str): The unique ID of the user.
+            tokens (list): The list of tokens to update for the user.
+        """
+        collection = self.db['users']
+        collection.update_one({'id': user_id}, {'$set': {'tokens': tokens}})
+
     def _add_includes(self, item: dict, includes: list) -> None:
         """
         Add included related documents to the item.

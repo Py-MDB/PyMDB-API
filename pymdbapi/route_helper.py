@@ -16,7 +16,12 @@ from flask import jsonify, request, url_for
 from pymdbapi.mongodb import PyMongoDB
 from pymdbapi.schema import DatabaseSchema
 from cerberus import Validator
+import uuid
+import logging
 
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 db = PyMongoDB()
 schema = DatabaseSchema()
@@ -111,8 +116,12 @@ class RouteHelper:
         data = request.json
         if not validator.validate(data):
             return jsonify({"error": "Invalid data", "details": validator.errors}), 400
-        inserted_id = db.insert(collection_name, data)
-        return jsonify({"inserted_id": inserted_id}), 201
+        try:
+            inserted_id = db.insert(collection_name, data)
+            return jsonify({"inserted_id": inserted_id}), 201
+        except Exception as e:
+            logger.error(f"Error inserting data into {collection_name}: {e}")
+            return jsonify({"error": "Internal Server Error"}), 500
     
     def delete_data_by_id(self, collection_name: str, id: str):
         """
@@ -135,3 +144,26 @@ class RouteHelper:
                 return jsonify({"error": str(e)}), 500
         else:
             return jsonify({"error": "id parameter is required"}), 400
+
+    def generate_token(self, collection_name: str, id: str):
+        """
+        Generate a new token for a given user.
+
+        Args:
+            id (str): The unique ID of the user.
+
+        Returns:
+            Response: A Flask response object containing the new token or an error message.
+        """
+        user = db.find_by_key_value(collection_name, {'id': id})
+        print(user)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        new_token = str(uuid.uuid4())
+        if 'tokens' not in user[0]:
+            user[0]['tokens'] = []
+        user[0]['tokens'].append(new_token)
+        db.update_user_tokens(id, user[0]['tokens'])
+
+        return jsonify({"new_token": new_token}), 201

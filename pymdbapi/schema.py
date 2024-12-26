@@ -59,3 +59,14 @@ class DatabaseSchema:
             'slug': {'type': 'string', 'required': True},
             'version': {'type': 'string', 'required': True},
         }
+        self.users_schema = {
+            'username': {'type': 'string', 'required': True},
+            'full name': {'type': 'string', 'required': True},
+            'email': {'type': 'string', 'required': False},
+            'privilege_level': {'type': 'integer', 'required': True}
+        }
+        self.app_tokens_schema = {
+            'name': {'type': 'string', 'required': True},
+            'description': {'type': 'string', 'required': False},
+            'privilege_level': {'type': 'integer', 'required': True}
+        }
