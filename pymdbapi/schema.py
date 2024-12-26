@@ -14,7 +14,7 @@ Author(s): Jesse Butryn (jesse@jesseb.org)
 
 class DatabaseSchema:
     def __init__(self):
-        self.hardware_data_schema = {
+        self.hardware_schema = {
             'name': {'type': 'string', 'required': True},
             'type': {'type': 'string', 'required': True},
             'state': {'type': 'string', 'required': True},

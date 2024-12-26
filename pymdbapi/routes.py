@@ -26,19 +26,19 @@ def home():
 
 @routes.route('/hardware', methods=['GET'])
 def get_hardware():
-    return routehelper.get_data('hardware_data')
+    return routehelper.get_data('hardware')
 
 @routes.route('/hardware/<id>', methods=['GET'])
 def get_hardware_by_id(id):
-    return routehelper.get_data_by_id('hardware_data', id)
+    return routehelper.get_data_by_id('hardware', id)
 
 @routes.route('/hardware', methods=['POST'])
 def create_hardware():
-    return routehelper.add_data('hardware_data')
+    return routehelper.add_data('hardware')
 
 @routes.route('/hardware/<id>', methods=['DELETE'])
 def delete_hardware(id):
-    return routehelper.delete_data_by_id('hardware_data', id)
+    return routehelper.delete_data_by_id('hardware', id)
 
 @routes.route('/facilities', methods=['GET'])
 def get_facilities():
