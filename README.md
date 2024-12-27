@@ -38,7 +38,7 @@ Features:
     docker-compose up --build -d
     ```
 
-4. The API is secured by `User-Token` and `App-Token`s by default.  The intial build of the API will automatically generate a default admin user and app token.  You will need to either manually look for these values in the db or they should be printed to the docker compose logs `docker-compose logs pymdbapi-db`
+4. The API is secured by `User-Token` and `App-Token`s by default.  The intial build of the API will automatically generate a default admin user and app token.  You will need to either manually look for these values in the db or they should be printed to the docker compose logs `docker-compose logs`
 
 5. The API should now be accessible at `http://localhost:5000`.
 
