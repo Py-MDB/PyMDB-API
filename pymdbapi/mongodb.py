@@ -161,7 +161,19 @@ class PyMongoDB:
         Args:
             item (dict): The document to add href links to.
         """
-        if 'facility' in item and 'id' in item['facility']:
-            item['facility']['href'] = f"/facilities/{item['facility']['id']}"
-        if 'operating_system' in item and 'id' in item['operating_system']:
-            item['operating_system']['href'] = f"/operating_systems/{item['operating_system']['id']}"
+        href_transmute = [
+            'facility',
+            'operating_system',
+            'hardware',
+            'bridged_interfaces',
+            'lag_interfaces',
+            'license',
+            'manufacturer',
+            'rack',
+            'interfaces',
+            'software',
+        ]
+        for key in href_transmute:
+            if key in item and 'id' in item[key]:
+                item[key]['href'] = f"/{key.replace('_', '-')}s/{item[key]['id']}"
+
