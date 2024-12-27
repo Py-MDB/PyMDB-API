@@ -1,62 +1,62 @@
 import unittest
+import logging
 from unittest.mock import patch, MagicMock
-from flask import Flask
-from pymdbapi.routes import routes
+from flask import Flask, jsonify
+
 
 class TestRoutes(unittest.TestCase):
+    def setUp(self):
+        logging.getLogger('pymongo').setLevel(logging.WARNING)
+        self.app = Flask(__name__)
+        with patch('pymdbapi.auth.authenticate', new=self.mock_authenticate):
+            from pymdbapi.routes import routes
+            self.app.register_blueprint(routes)
+        self.client = self.app.test_client()
 
-    @classmethod
-    def setUpClass(cls):
-        cls.app = Flask(__name__)
-        cls.app.register_blueprint(routes)
-        cls.client = cls.app.test_client()
+    def mock_authenticate(self, *args, **kwargs):
+        def decorator(f):
+            return f
+        return decorator
 
-    @patch('pymdbapi.routes.db')
-    def test_home(self, mock_db):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json, {"message": "Welcome to the PyMDB API!"})
-
-    @patch('pymdbapi.routes.db')
-    def test_create_data(self, mock_db):
-        sample_hardware = {
-            'id': 'mock_id',
-            'name': 'test1',
-            'type': 'server',
-            'specs': {
-                'cpu': 'Intel Xeon',
-                'ram': '128GB',
-                'storage': '512GB SSD'
-            },
-            'operating_system': 'debian',
-            'state': 'active',
-        }
-        mock_db.insert.return_value = 'mock_id'
-        response = self.client.post('/hardware', json=sample_hardware)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json, {'inserted_id': 'mock_id'})
-
-    @patch('pymdbapi.routes.db')
-    def test_get_data(self, mock_db):
-        mock_db.get_all.return_value = [{'name': 'test1'}]
+    @patch('pymdbapi.route_helper.RouteHelper.get_data')
+    def test_get_hardware_route(self, mock_get_data):
+        mock_get_data.return_value = MagicMock(status_code=200)
+        mock_get_data.return_value.get_json.return_value = {"hardware": []}
         response = self.client.get('/hardware')
         self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response.json, list)
+        self.assertEqual(response.get_json(), {"hardware": []})
 
-    @patch('pymdbapi.routes.db')
-    def test_get_data_by_key_value(self, mock_db):
-        mock_db.find_by_key_value.return_value = [{'name': 'test1'}]
-        response = self.client.get('/hardware', query_string={'name': 'test1'})
+    @patch('pymdbapi.route_helper.RouteHelper.get_data_by_id')
+    def test_get_hardware_by_id_route(self, mock_get_data_by_id):
+        mock_get_data_by_id.return_value = MagicMock(status_code=200)
+        mock_get_data_by_id.return_value.get_json.return_value = {"id": "123"}
+        response = self.client.get('/hardware/123')
         self.assertEqual(response.status_code, 200)
-        self.assertIsInstance(response.json, list)
-        self.assertGreater(len(response.json), 0)
+        self.assertEqual(response.get_json(), {"id": "123"})
 
-    @patch('pymdbapi.routes.db')
-    def test_delete_data(self, mock_db):
-        mock_db.delete_by_id.return_value = 1
-        response = self.client.delete('/hardware', query_string={'id': 'mock_id'})
+    @patch('pymdbapi.route_helper.RouteHelper.upsert_data')
+    def test_create_hardware_route(self, mock_upsert_data):
+        mock_upsert_data.return_value = MagicMock(status_code=201)
+        mock_upsert_data.return_value.json.return_value = {"inserted_id": "123"}
+        response = self.client.post('/hardware', json={"name": "New Hardware"})
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.get_json(), {"inserted_id": "123"})
+
+    @patch('pymdbapi.route_helper.RouteHelper.delete_data_by_id')
+    def test_delete_hardware_route(self, mock_delete_data_by_id):
+        mock_delete_data_by_id.return_value = MagicMock(status_code=200)
+        mock_delete_data_by_id.return_value.get_json.return_value = {"deleted_count": 1}
+        response = self.client.delete('/hardware/123')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json, {'deleted_count': 1})
+        self.assertEqual(response.get_json(), {"deleted_count": 1})
+
+    @patch('pymdbapi.route_helper.RouteHelper.upsert_data')
+    def test_upsert_hardware_by_id_route(self, mock_upsert_data):
+        mock_upsert_data.return_value = MagicMock(status_code=200)
+        mock_upsert_data.return_value.get_json.return_value = {"updated_id": "123"}
+        response = self.client.put('/hardware/123', json={"name": "Updated Hardware"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json(), {"updated_id": "123"})
 
 if __name__ == '__main__':
     unittest.main()

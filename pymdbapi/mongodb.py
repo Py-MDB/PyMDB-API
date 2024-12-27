@@ -114,6 +114,22 @@ class PyMongoDB:
         collection = self.db['users']
         collection.update_one({'id': user_id}, {'$set': {'tokens': tokens}})
 
+    def update_by_id(self, collection_name: str, id: str, data: dict) -> int:
+        """
+        Update a document in a specified collection by ID.
+
+        Args:
+            collection_name (str): The name of the collection to update data in.
+            id (str): The unique ID of the document to update.
+            data (dict): The data to update in the document.
+
+        Returns:
+            int: The count of updated documents.
+        """
+        collection = self.db[collection_name]
+        result = collection.update_one({"id": id}, {"$set": data})
+        return result.modified_count
+
     def _add_includes(self, item: dict, includes: list) -> None:
         """
         Add included related documents to the item.

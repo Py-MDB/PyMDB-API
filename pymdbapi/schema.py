@@ -15,18 +15,21 @@ Author(s): Jesse Butryn (jesse@jesseb.org)
 class DatabaseSchema:
     def __init__(self):
         self.hardware_schema = {
+            'id': {'type': 'string', 'required': False},
             'name': {'type': 'string', 'required': True},
             'type': {'type': 'string', 'required': True},
             'state': {'type': 'string', 'required': True},
             'operating_system': {
                 'type': 'dict',
                 'schema': {
+                    'href': {'type': 'string', 'required': False},
                     'id': {'type': 'string', 'required': False},
                 }
             },
             'facility': {
                 'type': 'dict',
                 'schema': {
+                    'href': {'type': 'string', 'required': False},
                     'id': {'type': 'string', 'required': False},
                 }
             },

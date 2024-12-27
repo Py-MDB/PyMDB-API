@@ -22,6 +22,7 @@ def authenticate(required_privilege=1):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
+            print('why am I here?')
             user_token = request.headers.get('User-Token')
             app_token = request.headers.get('App-Token')
             
