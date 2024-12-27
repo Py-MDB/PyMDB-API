@@ -20,7 +20,7 @@ import uuid
 import logging
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 db = PyMongoDB()
@@ -101,27 +101,27 @@ class RouteHelper:
         except Exception as e:
             return jsonify({"error": str(e)}), 500
         
-    def add_data(self, collection_name: str):
-        """
-        Add new data to a specified collection.
+    # def add_data(self, collection_name: str):
+    #     """
+    #     Add new data to a specified collection.
 
-        Args:
-            collection_name (str): The name of the collection to add data to.
+    #     Args:
+    #         collection_name (str): The name of the collection to add data to.
 
-        Returns:
-            Response: A Flask response object containing the inserted ID or an error message.
-        """
-        collection_schema = getattr(schema, f"{collection_name}_schema")
-        validator = Validator(collection_schema)
-        data = request.json
-        if not validator.validate(data):
-            return jsonify({"error": "Invalid data", "details": validator.errors}), 400
-        try:
-            inserted_id = db.insert(collection_name, data)
-            return jsonify({"inserted_id": inserted_id}), 201
-        except Exception as e:
-            logger.error(f"Error inserting data into {collection_name}: {e}")
-            return jsonify({"error": "Internal Server Error"}), 500
+    #     Returns:
+    #         Response: A Flask response object containing the inserted ID or an error message.
+    #     """
+    #     collection_schema = getattr(schema, f"{collection_name}_schema")
+    #     validator = Validator(collection_schema)
+    #     data = request.json
+    #     if not validator.validate(data):
+    #         return jsonify({"error": "Invalid data", "details": validator.errors}), 400
+    #     try:
+    #         inserted_id = db.insert(collection_name, data)
+    #         return jsonify({"inserted_id": inserted_id}), 201
+    #     except Exception as e:
+    #         logger.error(f"Error inserting data into {collection_name}: {e}")
+    #         return jsonify({"error": "Internal Server Error"}), 500
     
     def delete_data_by_id(self, collection_name: str, id: str):
         """
@@ -167,3 +167,40 @@ class RouteHelper:
         db.update_user_tokens(id, user[0]['tokens'])
 
         return jsonify({"new_token": new_token}), 201
+
+    def upsert_data(self, collection_name: str, id: str = None):
+        """
+        Add or modify data in a specified collection.
+
+        Args:
+            collection_name (str): The name of the collection to add or modify data in.
+            id (str, optional): The unique ID of the document to modify. If None, a new document will be created.
+
+        Returns:
+            Response: A Flask response object containing the upserted ID or an error message.
+        """
+        collection_schema = getattr(schema, f"{collection_name}_schema")
+        validator = Validator(collection_schema)
+        new_data = request.json
+        if id:
+            try:
+                current_data = db.find_by_key_value(collection_name, {'id': id})
+                if not current_data:
+                    return jsonify({"error": "No data found to update"}), 404
+                current_data[0].update(new_data)
+                if not validator.validate(current_data[0]):
+                    return jsonify({"error": "Invalid data", "details": validator.errors}), 400
+                updated_count = db.update_by_id(collection_name, id, current_data[0])
+                return jsonify({"updated_id": id}), 200
+            except Exception as e:
+                logger.error(f"Error updating data in {collection_name}: {e}")
+                return jsonify({"error": "Internal Server Error"}), 500
+        else:
+            if not validator.validate(new_data):
+                return jsonify({"error": "Invalid data", "details": validator.errors}), 400
+            try:
+                inserted_id = db.insert(collection_name, new_data)
+                return jsonify({"inserted_id": inserted_id}), 201
+            except Exception as e:
+                logger.error(f"Error inserting data into {collection_name}: {e}")
+                return jsonify({"error": "Internal Server Error"}), 500
