@@ -15,6 +15,7 @@ Author(s): Jesse Butryn (jesse@jesseb.org)
 import os
 from pymongo import MongoClient
 from bson import ObjectId
+import datetime
 import uuid
 
 class PyMongoDB:
@@ -62,6 +63,7 @@ class PyMongoDB:
         collection = self.db[collection_name]
         while True:
             new_uuid = str(uuid.uuid4())
+            data['created'] = datetime.datetime.now().isoformat()
             if not collection.find_one({"id": new_uuid}):
                 data['id'] = new_uuid
                 break
