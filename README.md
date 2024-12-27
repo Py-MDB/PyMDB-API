@@ -1,6 +1,6 @@
 # PyMDB-API
 
-PyMDB-API is a simple API built with Flask to manage all your CMDB related needs. It includes endpoints for hardware, users, facilities, operating systems, and application tokens. The API uses Docker and Docker Compose for easy setup and deployment.
+PyMDB-API is a simple API built with Flask to manage all your CMDB related needs. It includes endpoints for hardware, users, facilities, operating systems, and application tokens.
 
 Features:
 - Quick development setup with Docker compose
