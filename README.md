@@ -26,7 +26,7 @@ Features:
 
     ```sh
     export MONGO_INITDB_ROOT_USERNAME=PyMDB
-    export MONGO_INITDB_ROOT_PASSWORD=112233445566
+    export MONGO_INITDB_ROOT_PASSWORD=112233445566 #changeme
     export MONGO_HOST=172.20.0.2
     export MONGO_PORT=27017
     ```
