@@ -12,7 +12,7 @@ you make are also licensed under the MPL-2.0. For full terms and conditions, ref
 Author(s): Jesse Butryn (jesse@jesseb.org)
 """
 
-from flask import Blueprint, jsonify
+from flask import Blueprint
 from pymdbapi.route_helper import RouteHelper
 from pymdbapi.auth import authenticate
 
@@ -45,3 +45,14 @@ def delete_hardware(id):
 @authenticate(required_privilege=3)
 def upsert_hardware_by_id(id):
     return routehelper.upsert_data('hardware', id)
+
+@routes.route('/hardware/<id>/link-interfaces', methods=['POST'])
+@authenticate(required_privilege=3)
+def link_interfaces_to_hardware(id):
+    return routehelper.link_related_items('hardware', id, 'interfaces', 'interfaces')
+
+@routes.route('/hardware/<id>/unlink-interfaces', methods=['POST'])
+@authenticate(required_privilege=3)
+def unlink_interfaces_from_hardware(id):
+    return routehelper.unlink_related_items('hardware', id, 'interfaces', 'interfaces')
+

@@ -53,7 +53,10 @@ hardware_schema = {
                     'schema': {
                         'drive_type': {'type': 'string', 'required': True},
                         'capacity': {'type': 'string', 'required': True},
-                        'interface': {'type': 'string', 'required': True}
+                        'interface': {'type': 'string', 'required': True},
+                        'serial': {'type': 'string', 'required': False},
+                        'manufacturer': {'type': 'string', 'required': False},
+                        'product_id' : {'type': 'string', 'required': False},
                     }
                 }
             }
