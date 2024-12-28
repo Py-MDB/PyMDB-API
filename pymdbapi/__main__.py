@@ -14,13 +14,15 @@ Author(s): Jesse Butryn (jesse@jesseb.org)
 
 from flask import Flask
 from flask_cors import CORS
-from pymdbapi.routes import routes
+import os
+import importlib
 from pymdbapi.init_db import initialize_db
+from pymdbapi.routes import register_routes
 
 app = Flask(__name__)
 CORS(app)
 
-app.register_blueprint(routes)
+register_routes(app)
 
 def main():
     initialize_db()

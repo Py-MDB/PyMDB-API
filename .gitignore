@@ -1,5 +1,5 @@
 test.py
-generate_data.py
+generate_data.*
 build/
 *__pycache__/
 *.egg-info/
