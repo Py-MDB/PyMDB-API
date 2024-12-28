@@ -144,15 +144,33 @@ class PyMongoDB:
             'facility': 'facilities'
         }
         for include in includes:
-            if include in item and 'id' in item[include]:
-                if include in include_transmute:
-                    collection_name = include_transmute[include]
-                else:
-                    collection_name = include + 's'
-                full_item = self.db[collection_name].find_one({"id": item[include]['id']})
-                if full_item:
-                    full_item.pop('_id', None)
-                    item[include] = full_item
+            if include in item:
+                if isinstance(item[include], list):
+                    for sub_item in item[include]:
+                        if 'id' in sub_item:
+                            self._add_include(sub_item, include, include_transmute)
+                elif 'id' in item[include]:
+                    self._add_include(item[include], include, include_transmute)
+
+    def _add_include(self, sub_item: dict, include: str, include_transmute: dict) -> None:
+        """
+        Add included related document to the sub_item.
+
+        Args:
+            sub_item (dict): The sub-document to add includes to.
+            include (str): The name of the include.
+            include_transmute (dict): A dictionary to transmute include names.
+        """
+        if include in include_transmute:
+            collection_name = include_transmute[include]
+        elif include.endswith('s'):
+            collection_name = include
+        else:
+            collection_name = include + 's'
+        full_item = self.db[collection_name].find_one({"id": sub_item['id']})
+        if full_item:
+            full_item.pop('_id', None)
+            sub_item.update(full_item)
 
     def _add_hrefs(self, item: dict) -> None:
         """
@@ -174,6 +192,11 @@ class PyMongoDB:
             'software',
         ]
         for key in href_transmute:
-            if key in item and 'id' in item[key]:
-                item[key]['href'] = f"/{key.replace('_', '-')}s/{item[key]['id']}"
+            if key in item:
+                if isinstance(item[key], list):
+                    for sub_item in item[key]:
+                        if 'id' in sub_item:
+                            sub_item['href'] = f"/{key.replace('_', '-')}s/{sub_item['id']}"
+                elif 'id' in item[key]:
+                    item[key]['href'] = f"/{key.replace('_', '-')}s/{item[key]['id']}"
 

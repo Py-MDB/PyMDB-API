@@ -19,7 +19,6 @@ from cerberus import Validator
 import uuid
 import logging
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -31,7 +30,7 @@ class RouteHelper:
     def __init__(self):
         pass
 
-    def get_data(self, collection_name: str):
+    def get_data(self, collection_name: str) -> tuple:
         """
         Retrieve data from a specified collection with optional filters and includes.
 
@@ -80,7 +79,7 @@ class RouteHelper:
 
         return jsonify(response), 200
         
-    def get_data_by_id(self, collection_name: str, id: str):
+    def get_data_by_id(self, collection_name: str, id: str) -> tuple:
         """
         Retrieve data from a specified collection by ID with optional includes.
 
@@ -100,30 +99,8 @@ class RouteHelper:
             return jsonify(data), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
-        
-    # def add_data(self, collection_name: str):
-    #     """
-    #     Add new data to a specified collection.
-
-    #     Args:
-    #         collection_name (str): The name of the collection to add data to.
-
-    #     Returns:
-    #         Response: A Flask response object containing the inserted ID or an error message.
-    #     """
-    #     collection_schema = getattr(schema, f"{collection_name}_schema")
-    #     validator = Validator(collection_schema)
-    #     data = request.json
-    #     if not validator.validate(data):
-    #         return jsonify({"error": "Invalid data", "details": validator.errors}), 400
-    #     try:
-    #         inserted_id = db.insert(collection_name, data)
-    #         return jsonify({"inserted_id": inserted_id}), 201
-    #     except Exception as e:
-    #         logger.error(f"Error inserting data into {collection_name}: {e}")
-    #         return jsonify({"error": "Internal Server Error"}), 500
     
-    def delete_data_by_id(self, collection_name: str, id: str):
+    def delete_data_by_id(self, collection_name: str, id: str) -> tuple:
         """
         Delete data from a specified collection by ID.
 
@@ -145,7 +122,7 @@ class RouteHelper:
         else:
             return jsonify({"error": "id parameter is required"}), 400
 
-    def generate_token(self, collection_name: str, id: str):
+    def generate_token(self, collection_name: str, id: str) -> tuple:
         """
         Generate a new token for a given user.
 
@@ -156,7 +133,6 @@ class RouteHelper:
             Response: A Flask response object containing the new token or an error message.
         """
         user = db.find_by_key_value(collection_name, {'id': id})
-        print(user)
         if not user:
             return jsonify({"error": "User not found"}), 404
 
@@ -168,7 +144,7 @@ class RouteHelper:
 
         return jsonify({"new_token": new_token}), 201
 
-    def upsert_data(self, collection_name: str, id: str = None):
+    def upsert_data(self, collection_name: str, id: str = None) -> tuple:
         """
         Add or modify data in a specified collection.
 
@@ -182,6 +158,7 @@ class RouteHelper:
         collection_schema = getattr(schema, f"{collection_name}_schema")
         validator = Validator(collection_schema)
         new_data = request.json
+        logger.info(f"New data: {new_data}")
         if id:
             try:
                 current_data = db.find_by_key_value(collection_name, {'id': id})
@@ -189,6 +166,7 @@ class RouteHelper:
                     return jsonify({"error": "No data found to update"}), 404
                 current_data[0].update(new_data)
                 if not validator.validate(current_data[0]):
+                    logger.error(f"Validation errors: {validator.errors}")
                     return jsonify({"error": "Invalid data", "details": validator.errors}), 400
                 updated_count = db.update_by_id(collection_name, id, current_data[0])
                 return jsonify({"updated_id": id}), 200
@@ -197,6 +175,7 @@ class RouteHelper:
                 return jsonify({"error": "Internal Server Error"}), 500
         else:
             if not validator.validate(new_data):
+                logger.error(f"Validation errors: {validator.errors}")
                 return jsonify({"error": "Invalid data", "details": validator.errors}), 400
             try:
                 inserted_id = db.insert(collection_name, new_data)
