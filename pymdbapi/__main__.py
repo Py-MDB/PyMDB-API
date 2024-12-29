@@ -14,8 +14,6 @@ Author(s): Jesse Butryn (jesse@jesseb.org)
 
 from flask import Flask
 from flask_cors import CORS
-import os
-import importlib
 from pymdbapi.init_db import initialize_db
 from pymdbapi.routes import register_routes
 
@@ -27,6 +25,8 @@ register_routes(app)
 def main():
     initialize_db()
     app.run(host='0.0.0.0', port=5000)
+    # ssl_context = ('/path/to/cert.pem', '/path/to/key.pem')
+    # app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
 
 if __name__ == "__main__":
     main()

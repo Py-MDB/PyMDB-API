@@ -49,10 +49,10 @@ def upsert_hardware_by_id(id):
 @routes.route('/hardware/<id>/link-interfaces', methods=['POST'])
 @authenticate(required_privilege=3)
 def link_interfaces_to_hardware(id):
-    return routehelper.link_related_items('hardware', id, 'interfaces', 'interfaces')
+    return routehelper.link_related_items('hardware', id, 'interfaces', 'interfaces', 'hardware')
 
 @routes.route('/hardware/<id>/unlink-interfaces', methods=['POST'])
 @authenticate(required_privilege=3)
 def unlink_interfaces_from_hardware(id):
-    return routehelper.unlink_related_items('hardware', id, 'interfaces', 'interfaces')
+    return routehelper.unlink_related_items('hardware', id, 'interfaces', 'interfaces', 'hardware')
 

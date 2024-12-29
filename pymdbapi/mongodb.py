@@ -141,7 +141,9 @@ class PyMongoDB:
             includes (list): A list of related documents to include in the item.
         """
         include_transmute = {
-            'facility': 'facilities'
+            'facility': 'facilities',
+            'hardware': 'hardware',
+            'connected_interface': 'interfaces',
         }
         for include in includes:
             if include in item:
@@ -179,24 +181,40 @@ class PyMongoDB:
         Args:
             item (dict): The document to add href links to.
         """
-        href_transmute = [
-            'facility',
-            'operating_system',
-            'hardware',
-            'bridged_interfaces',
-            'lag_interfaces',
-            'license',
-            'manufacturer',
-            'rack',
-            'interfaces',
-            'software',
-        ]
-        for key in href_transmute:
+        href_transmute = {
+            'facility': 'facilities',
+            'operating_system': 'operating-systems',
+            'hardware': 'hardware',
+            'bridged_interfaces': 'interfaces',
+            'lag_interfaces': 'interfaces',
+            'license': 'licenses',
+            'manufacturer': 'manufacturers',
+            'rack': 'racks',
+            'interfaces': 'interfaces',
+            'software': 'software',
+            'connected_interface': 'interfaces'
+        }
+        for key, path in href_transmute.items():
             if key in item:
                 if isinstance(item[key], list):
                     for sub_item in item[key]:
                         if 'id' in sub_item:
-                            sub_item['href'] = f"/{key.replace('_', '-')}s/{sub_item['id']}"
+                            sub_item['href'] = f"/{path}/{sub_item['id']}"
                 elif 'id' in item[key]:
-                    item[key]['href'] = f"/{key.replace('_', '-')}s/{item[key]['id']}"
+                    item[key]['href'] = f"/{path}/{item[key]['id']}"
 
+    def validate_document_exists(self, collection_name: str, id: str):
+        """
+        Validate that a document exists in the specified collection.
+
+        Args:
+            collection_name (str): The name of the collection.
+            id (str): The unique ID of the document.
+
+        Returns:
+            dict: The document if it exists, otherwise None.
+        """
+        doc = self.find_by_key_value(collection_name, {'id': id})
+        if not doc:
+            return None
+        return doc[0]
