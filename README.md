@@ -1,134 +1,171 @@
-# PyMDB-API
+<div align="center">
 
-PyMDB-API is a simple API built with Flask to manage all your CMDB related needs. It includes endpoints for hardware, users, facilities, operating systems, and application tokens.
+  <img src="assets/logo.png" alt="logo" width="200" height="auto" />
+  <h1>PyMDB-API</h1>
+  
+  <p>
+    The API component for the PyMDB CMDB/DCIM project.
+  </p>
+  
+  
+<!-- Badges -->
+<p>
+  <a href="https://github.com/Py-MDB/PyMDB-API/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/Py-MDB/PyMDB-API" alt="contributors" />
+  </a>
+  <a href="">
+    <img src="https://img.shields.io/github/last-commit/Py-MDB/PyMDB-API" alt="last update" />
+  </a>
+  <a href="https://github.com/Py-MDB/PyMDB-API/network/members">
+    <img src="https://img.shields.io/github/forks/Py-MDB/PyMDB-API" alt="forks" />
+  </a>
+  <a href="https://github.com/Py-MDB/PyMDB-API/stargazers">
+    <img src="https://img.shields.io/github/stars/Py-MDB/PyMDB-API" alt="stars" />
+  </a>
+  <a href="https://github.com/Py-MDB/PyMDB-API/issues/">
+    <img src="https://img.shields.io/github/issues/Py-MDB/PyMDB-API" alt="open issues" />
+  </a>
+  <a href="https://github.com/Py-MDB/PyMDB-API/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Py-MDB/PyMDB-API.svg" alt="license" />
+  </a>
+</p>
+   
+<h4>
+    <a href="https://github.com/Py-MDB/PyMDB-API/">View Demo</a>
+  <span> · </span>
+    <a href="https://github.com/Py-MDB/PyMDB-API">Documentation</a>
+  <span> · </span>
+    <a href="https://github.com/Py-MDB/PyMDB-API/issues/">Report Bug</a>
+  <span> · </span>
+    <a href="https://github.com/Py-MDB/PyMDB-API/issues/">Request Feature</a>
+  </h4>
+</div>
 
-Features:
-- Quick development setup with Docker compose
-- Secure access with user and application tokens
-- Basic data validation with defined schemas
-- Unit tests for maintaining code quality
+<br />
 
-## Prerequisites
+<!-- Table of Contents -->
+# :notebook_with_decorative_cover: Table of Contents
 
-- Docker
-- Docker Compose
+- [About the Project](#star2-about-the-project)
+  * [Screenshots](#camera-screenshots)
+  * [Tech Stack](#space_invader-tech-stack)
+  * [Features](#dart-features)
+- [Getting Started](#toolbox-getting-started)
+- [Usage](#eyes-usage)
+- [Roadmap](#compass-roadmap)
+- [Contributing](#wave-contributing)
+<!-- - [FAQ](#grey_question-faq) -->
+- [License](#warning-license)
+- [Contact](#handshake-contact)
+- [Acknowledgements](#gem-acknowledgements)
 
-## Setup Development Environment
+  
 
-1. Clone the repository:
+<!-- About the Project -->
+## :star2: About the Project
 
-    ```sh
-    git clone https://github.com/Py-MDB/PyMDB-API
-    cd PyMDB-API
-    ```
 
-2. Create the following environment variables in your build environment:
+<!-- Screenshots -->
+### :camera: Screenshots
 
-    ```sh
-    export MONGO_INITDB_ROOT_USERNAME=PyMDB
-    export MONGO_INITDB_ROOT_PASSWORD=112233445566 #changeme
-    export MONGO_HOST=172.20.0.2
-    export MONGO_PORT=27017
-    ```
+<div align="center"> 
+  <img src="assets/screenshot_1.png" alt="screenshot" />
+</div>
 
-3. Navigate to the `PyMDB-API` directory and start the services using Docker Compose:
 
-    ```sh
-    cd PyMDB-API
-    docker-compose up --build -d
-    ```
+<!-- TechStack -->
+### :space_invader: Tech Stack
 
-4. The API is secured by `User-Token` and `App-Token`s by default.  The intial build of the API will automatically generate a default admin user and app token.  You will need to either manually look for these values in the db or they should be printed to the docker compose logs `docker-compose logs`
+<details>
+  <summary>API</summary>
+  <ul>
+    <li><a href="https://www.docker.com/">Docker</a></li>
+    <li><a href="https://www.python.org/">Python</a></li>
+    <li><a href="https://flask.palletsprojects.com/en/stable/">Flask</a></li>
+  </ul>
+</details>
 
-5. The API should now be accessible at `http://localhost:5000`.
+<details>
+<summary>Database</summary>
+  <ul>
+    <li><a href="https://www.mongodb.com/">MongoDB</a></li>
+  </ul>
+</details>
 
-## Running Tests
+<!-- Features -->
+### :dart: Features
 
-To run the unit tests, use the following command:
+- RESTful API for managing CMDB/DCIM data.
+- Token-based authentication for secure access.
+- Schema validation for input data integrity.
+- Relationship management between different objects.
 
-```sh
-python -m unittest discover -s tests
-```
+<!-- Getting Started -->
+## 	:toolbox: Getting Started
 
-## Project Layout
+For detailed information on setting up a development environment, see the [Development Guide](docs/development.md).
 
-### Directories
 
-- `PyMDB-API/pymdbapi`: Contains the API code.
-- `PyMDB-API/tests`: Contains unit tests
+<!-- Usage -->
+## :eyes: Usage
 
-### Files
+For more comprehensive usage documentation, see the [docs readme](docs/README.md)
 
-- `PyMDB-API/Dockerfile`: Dockerfile for building the API container.
-- `PyMDB-API/docker-compose.yml`: Docker Compose file for running the API and MongoDB containers.
-- `PyMDB-API/pymdbapi/__main__.py`: Entry point for the Flask application.
-- `PyMDB-API/pymdbapi/routes.py`: Contains the API routes.
-- `PyMDB-API/pymdbapi/route-helper.py`: Contains helper functions that connect the routes to the database. 
-- `PyMDB-API/pymdbapi/mongodb.py`: Contains functions related to interacting with mongodb.
-- `PyMDB-API/pymdbapi/schema.py`: Contains the schema definitions for data validation.
-- `PyMDB-API/pymdbapi/init_db.py`: Contains the db init functions that will create initial access tokens.
-- `PyMDB-API/pymdbapi/auth.py`: Contains the authentication function.
-- `PyMDB-API/test.py`: Script for testing the API endpoints.
+<!-- Roadmap -->
+## :compass: Roadmap
 
-## API Endpoints
+* [x] Create an API capable of creating, updating, deleting, and fetching database records.
+* [x] Secure the API with token based auth.
+* [x] Validate input data based on predetermined schemas.
+* [x] Establish links between objects.
+* [ ] Develop IPAM capabilities.
+* [ ] Develop more comprehensive support of object types and links.
+* [ ] Create front end UI.
+* [ ] Create automation pipelines for executing commands on enrolled servers.
+* [ ] Implement command execution capabilities to deploy and manage virtual machines on hypervisors using vendor-agnostic methods.
 
-### Available endpoints:
 
-- `/hardware`
-- `/hardware/<id>`
-- `/users`
-- `/users/<id>`
-- `/users/<id>/generate-token`
-- `/facilities`
-- `/facilities/<id>`
-- `/operating_systems`
-- `/operating_systems/<id>`
-- `/app_tokens`
-- `/app_tokens/<id>`
-- `/app_tokens/<id>/generate_token`
+<!-- Contributing -->
+## :wave: Contributing
 
-### `GET /<endpoint>`
+<a href="https://github.com/Py-MDB/PyMDB-API/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Py-MDB/PyMDB-API" />
+</a>
 
-Returns a list of the endpoint data from the MongoDB collection.
 
-### `POST /<endpoint>`
+Contributions are always welcome!
 
-Adds a new entry to the MongoDB collection. The request body should be in JSON format and follow the schema defined in `pymdbapi/schema.py`.
+See [contributing.md](docs/contributing.md) for ways to get started.
 
-### `PUT /<endpoint>`
 
-Update an existing record.  Updates must still follow the schema defined in `pymdbapi/schema.py`.
+<!-- FAQ -->
+<!-- ## :grey_question: FAQ
 
-### `DELETE /<endpoint>`
+- Question 1
 
-Delete an existing record.
+  + Answer 1
 
-## Example Request
+- Question 2
 
-### `POST /hardware`
+  + Answer 2 -->
 
-```json
-{
-    "name": "MyComputer",
-    "type": "Laptop",
-    "specs": {
-        "cpu": "Intel i7",
-        "ram": "16GB",
-        "storage": "512GB SSD"
-    }
-}
-```
 
-## Contributing
+<!-- License -->
+## :warning: License
 
-We welcome contributions to the project. To contribute, please follow these steps:
+Distributed under the Mozilla Public License 2.0. See [LICENSE](https://github.com/Py-MDB/PyMDB-API/blob/main/LICENSE) for more information.
 
-1. Fork the repository.
-2. Create a new branch for your feature or bugfix.
-3. Make your changes and commit them with a clear message.
-4. Push your changes to your fork.
-5. Create a pull request to the main repository.
 
-## License
+<!-- Contact -->
+## :handshake: Contact
 
-This project is licensed under the Mozilla Public License, version 2.0 (MPL-2.0). For full terms and conditions, refer to the license linked above.
+Jesse Butryn - [linkedin](https://www.linkedin.com/in/jesse-butryn/) - jesse@jesseb.org
+
+Project Link: [https://github.com/Py-MDB/PyMDB-API](https://github.com/Py-MDB/PyMDB-API)
+
+
+<!-- Acknowledgments -->
+## :gem: Acknowledgements
+
+ - [Awesome README template](https://github.com/Louis3797/awesome-readme-template)
+
