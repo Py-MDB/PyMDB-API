@@ -70,3 +70,33 @@ def delete_racks(id):
 @authenticate(required_privilege=3)
 def upsert_racks_by_id(id):
     return routehelper.upsert_data('racks', id)
+
+@routes.route('/regions', methods=['GET'])
+@authenticate(required_privilege=1)
+def get_regions():
+    return routehelper.get_data('regions')
+
+@routes.route('/regions/<id>', methods=['GET'])
+@authenticate(required_privilege=1)
+def get_region_by_id(id):
+    return routehelper.get_data_by_id('regions', id)
+
+@routes.route('/regions', methods=['POST'])
+@authenticate(required_privilege=3)
+def create_region():
+    return routehelper.upsert_data('regions')
+
+@routes.route('/regions/<id>', methods=['DELETE'])
+@authenticate(required_privilege=4)
+def delete_region(id):
+    return routehelper.delete_data_by_id('regions', id)
+
+@routes.route('/regions/<id>', methods=['PUT'])
+@authenticate(required_privilege=3)
+def upsert_region_by_id(id):
+    return routehelper.upsert_data('regions', id)
+
+@routes.route('/regions/<id>/link-facilities', methods=['POST'])
+@authenticate(required_privilege=3)
+def link_facilities_to_region(id):
+    return routehelper.link_related_items('regions', id, 'facilities', 'facilities', 'region')
