@@ -34,7 +34,7 @@
   - Required Privilege: 5
 
 - `PUT /users/<id>`
-  - Description: Update or insert a user by ID.
+  - Description: Update a user by ID.
   - Required Privilege: 5
   - Input Data: Must adhere to the user schema definition.
 
@@ -62,7 +62,7 @@
   - Required Privilege: 5
 
 - `PUT /app-tokens/<id>`
-  - Description: Update or insert an app token by ID.
+  - Description: Update an app token by ID.
   - Required Privilege: 5
   - Input Data: Must adhere to the app token schema definition.
 
@@ -86,7 +86,7 @@
   - Required Privilege: 4
 
 - `PUT /operating-systems/<id>`
-  - Description: Update or insert an operating system by ID.
+  - Description: Update an operating system by ID.
   - Required Privilege: 3
   - Input Data: Must adhere to the operating system schema definition.
 
@@ -108,7 +108,7 @@
   - Required Privilege: 4
 
 - `PUT /licenses/<id>`
-  - Description: Update or insert a license by ID.
+  - Description: Update a license by ID.
   - Required Privilege: 3
   - Input Data: Must adhere to the license schema definition.
 
@@ -130,7 +130,7 @@
   - Required Privilege: 4
 
 - `PUT /software/<id>`
-  - Description: Update or insert software by ID.
+  - Description: Update software by ID.
   - Required Privilege: 3
   - Input Data: Must adhere to the software schema definition.
 
@@ -154,7 +154,7 @@
   - Required Privilege: 4
 
 - `PUT /interfaces/<id>`
-  - Description: Update or insert an interface by ID.
+  - Description: Update an interface by ID.
   - Required Privilege: 3
   - Input Data: Must adhere to the interface schema definition.
 
@@ -178,7 +178,7 @@
   - Required Privilege: 4
 
 - `PUT /manufacturers/<id>`
-  - Description: Update or insert a manufacturer by ID.
+  - Description: Update a manufacturer by ID.
   - Required Privilege: 3
   - Input Data: Must adhere to the manufacturer schema definition.
 
@@ -202,7 +202,7 @@
   - Required Privilege: 4
 
 - `PUT /facilities/<id>`
-  - Description: Update or insert a facility by ID.
+  - Description: Update a facility by ID.
   - Required Privilege: 3
   - Input Data: Must adhere to the facility schema definition.
 
@@ -224,7 +224,7 @@
   - Required Privilege: 4
 
 - `PUT /racks/<id>`
-  - Description: Update or insert a rack by ID.
+  - Description: Update a rack by ID.
   - Required Privilege: 3
   - Input Data: Must adhere to the rack schema definition.
 
@@ -248,7 +248,7 @@
   - Required Privilege: 4
 
 - `PUT /hardware/<id>`
-  - Description: Update or insert hardware by ID.
+  - Description: Update hardware by ID.
   - Required Privilege: 3
   - Input Data: Must adhere to the hardware schema definition.
 
