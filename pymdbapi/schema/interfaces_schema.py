@@ -6,13 +6,20 @@ interfaces_schema = {
     'description': {'type': 'string', 'required': False},
     'state': {'type': 'string', 'required': True},
     'type': {'type': 'string', 'required': True},
+    'mode': {'type': 'string', 'required': False},
     'speed': {'type': 'string', 'required': False},
     'duplex': {'type': 'string', 'required': False},
-    'mac_address': {'type': 'string', 'required': True},
+    'mac_address': {'type': 'string', 'required': False},
     'mtu': {'type': 'integer', 'required': False},
     'enabled': {'type': 'boolean', 'required': True},
     'management': {'type': 'boolean', 'required': True},
-    'connected': {'type': 'boolean', 'required': True},
+    'connected_interface': {
+        'type': 'dict',
+        'schema': {
+            'href': {'type': 'string', 'required': False},
+            'id': {'type': 'string', 'required': False},
+        }
+    },
     'ipv4_ip': {'type': 'string', 'required': False},
     'ipv6_ip': {'type': 'string', 'required': False},
     'bridged_interfaces': {

@@ -44,3 +44,8 @@ def delete_interfaces(id):
 @authenticate(required_privilege=3)
 def upsert_interfaces_by_id(id):
     return routehelper.upsert_data('interfaces', id)
+
+@routes.route('/interfaces/<id>/connect-interface', methods=['POST'])
+@authenticate(required_privilege=3)
+def connect_interface(id):
+    return routehelper.link_related_items('interfaces', id, 'connected_interface', 'interfaces', 'connected_interface')
