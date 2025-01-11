@@ -1,7 +1,6 @@
 from pymdbapi.ipam.ipfunctions import get_all_addresses, strip_cidr
 from pymdbapi.route_helper import RouteHelper
 from flask import request
-from scapy.all import ARP, Ether, srp
 import ipaddress
 
 class Ipam:
