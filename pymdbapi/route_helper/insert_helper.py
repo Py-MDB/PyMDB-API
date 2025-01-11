@@ -24,20 +24,22 @@ logger = logging.getLogger(__name__)
 db = PyMongoDB()
 schema = DatabaseSchema()
 
-def upsert_data(collection_name: str, id: str = None) -> tuple:
+def upsert_data(collection_name: str, id: str = None, new_data: dict = None) -> tuple:
     """
     Add or modify data in a specified collection.
 
     Args:
         collection_name (str): The name of the collection to add or modify data in.
         id (str, optional): The unique ID of the document to modify. If None, a new document will be created.
+        new_data (dict, optional): The data to be inserted or updated. If None, data will be taken from request.json.
 
     Returns:
         Response: A Flask response object containing the upserted ID or an error message.
     """
     collection_schema = getattr(schema, f"{collection_name}_schema")
     validator = Validator(collection_schema)
-    new_data = request.json
+    if new_data is None:
+        new_data = request.json
     logger.info(f"New data: {new_data}")
     if id:
         try:

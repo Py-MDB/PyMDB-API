@@ -21,17 +21,19 @@ logger = logging.getLogger(__name__)
 
 db = PyMongoDB()
 
-def get_data(collection_name: str) -> tuple:
+def get_data(collection_name: str, filters: dict = None) -> tuple:
     """
     Retrieve data from a specified collection with optional filters and includes.
 
     Args:
         collection_name (str): The name of the collection to retrieve data from.
+        filters (dict, optional): A dictionary of filters to apply to the query.
 
     Returns:
         Response: A Flask response object containing the retrieved data or an error message.
     """
-    filters = request.args.to_dict()
+    if filters is None:
+        filters = request.args.to_dict()
     includes = filters.pop('include', '').split(',')
     page = int(filters.pop('page', 1))
     limit = int(filters.pop('limit', 10))
