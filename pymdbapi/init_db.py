@@ -28,7 +28,7 @@ def initialize_db():
             'privilege_level': 5,
             'tokens': [str(uuid.uuid4())]
         }
-        db.insert_user(admin_user_data)
+        db.insert('users', admin_user_data)
         print("Admin user created with token:", admin_user_data['tokens'][0])
     else:
         print("Admin user already exists")
@@ -42,7 +42,7 @@ def initialize_db():
             'privilege_level': 5,
             'token': str(uuid.uuid4())
         }
-        db.insert_app_token(admin_app_token_data)
+        db.insert('app_tokens', admin_app_token_data)
         print("Admin app token created:", admin_app_token_data['token'])
     else:
         print("Admin app token already exists")
